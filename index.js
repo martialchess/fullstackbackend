@@ -1,10 +1,11 @@
 // backend/index.js
+
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+require('dotenv').config(); // ✅ Load .env variables
+
 const contactRoute = require('./routes/contact');
 
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -18,5 +19,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`✅ Server is running on port ${PORT}`);
 });
