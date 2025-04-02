@@ -1,8 +1,23 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
+const cors = require('cors');
 const router = express.Router();
 
-router.post('/api/contact', async (req, res) => {
+const allowedOrigins = ['http://localhost:3000', 'https://fullstackportfolio-vgcc.onrender.com'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      //Allow if the origin matches or if no origin
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+router.use(cors(corsOptions)); //Enable CORS for the backend route
+
+router.post('/', async (req, res) => {
   const { name, email, message } = req.body;
   
   if (!name || !email || !message) {
