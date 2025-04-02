@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 const cors = require('cors');
 const router = express.Router();
 
-const allowedOrigins = ['http://localhost:3000', 'www.ridamalikdev.com'];
+const allowedOrigins = ['http://localhost:3000', 'www.ridamalikdev.com', 'fullstackportfolio-vgcc.onrender.com'];
 const corsOptions = {
   origin: function (origin, callback) {
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
