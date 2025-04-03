@@ -1,30 +1,18 @@
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const formData = {
-    name,
-    email,
-    message,
-  };
+// routes/contact.js (BACKEND)
+const express = require('express');
+const router = express.Router();
 
-  try {
-    const response = await fetch('https://api.ridamalikdev.com/api/contact', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
+router.post('/', (req, res) => {
+  const { name, email, message } = req.body;
 
-    const result = await response.json();
-
-    if (response.status === 200) {
-      // Success logic here
-      console.log('Message sent successfully!');
-    } else {
-      // Error handling here
-      console.error('Error sending message:', result.error);
-    }
-  } catch (error) {
-    console.error('Network or Server error:', error);
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'All fields are required.' });
   }
-};
+
+  // You can add email sending logic here with Nodemailer or store it in DB
+  console.log('Contact form submitted:', { name, email, message });
+
+  res.status(200).json({ success: true, message: 'Message received!' });
+});
+
+module.exports = router;
