@@ -1,52 +1,30 @@
-const express = require('express');
-const nodemailer = require('nodemailer');
-const cors = require('cors');
-const router = express.Router();
-
-const allowedOrigins = ['http://localhost:3000', 'www.ridamalikdev.com', 'fullstackportfolio-vgcc.onrender.com'];
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      //Allow if the origin matches or if no origin
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-};
-
-router.use(cors(corsOptions)); //Enable CORS for the backend route
-
-router.post('/', async (req, res) => {
-  const { name, email, message } = req.body;
-  
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const formData = {
+    name,
+    email,
+    message,
+  };
 
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+    const response = await fetch('https://api.ridamalikdev.com/api/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify(formData),
     });
 
-    await transporter.sendMail({
-      from: `"${name}" <${email}>`,
-      to: process.env.TO_EMAIL,
-      subject: 'New Contact Form Message',
-      html: `<p><strong>Name:</strong> ${name}</p>
-             <p><strong>Email:</strong> ${email}</p>
-             <p><strong>Message:</strong><br/>${message}</p>`,
-    });
+    const result = await response.json();
 
-    return res.status(200).json({ success: true, message: 'Message sent!' });
-  } catch (err) {
-    console.error('Email sending error:', err);
-    return res.status(500).json({ error: 'Failed to send email' });
+    if (response.status === 200) {
+      // Success logic here
+      console.log('Message sent successfully!');
+    } else {
+      // Error handling here
+      console.error('Error sending message:', result.error);
+    }
+  } catch (error) {
+    console.error('Network or Server error:', error);
   }
-});
-
-module.exports = router;
+};
